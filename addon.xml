@@ -6,8 +6,9 @@
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
         <summary lang="en">Routing module for plugins</summary>
-        <description lang="en">Routing module for plugins</description>
+        <description lang="en">Provides plugin URL routing and pattern matching</description>
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, 29 June 2007</license>
         <platform>all</platform>
+        <source>https://github.com/tamland/kodi-plugin-routing</source>
     </extension>
 </addon>
