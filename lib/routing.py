@@ -93,7 +93,7 @@ class Plugin(object):
 
     def run(self, argv=sys.argv):
         if len(argv) > 2:
-            self.args = parse_qs(argv[2].lstrip('?'))
+            self.args = parse_qs(argv[2].lstrip(b'?'))
         path = urlsplit(argv[0].decode('utf-8')).path or '/'
         self._dispatch(path)
 
