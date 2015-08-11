@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
-
 import re
 import sys
 from urlparse import urlsplit, parse_qs
@@ -25,11 +23,11 @@ from urllib import urlencode
 try:
     import xbmc
     import xbmcaddon
-    _addon_id = xbmcaddon.Addon().getAddonInfo('id').decode('utf-8')
+    _addon_id = xbmcaddon.Addon().getAddonInfo('id')
 
     def log(msg):
         msg = "[%s][routing] %s" % (_addon_id, msg)
-        xbmc.log(msg.encode('utf-8'), level=xbmc.LOGDEBUG)
+        xbmc.log(msg, level=xbmc.LOGDEBUG)
 except ImportError:
     def log(msg):
         print(msg)
@@ -47,7 +45,7 @@ class Plugin(object):
         self.args = None
         self.base_url = base_url
         if self.base_url is None:
-            self.base_url = "plugin://" + xbmcaddon.Addon().getAddonInfo('id').decode('utf-8')
+            self.base_url = "plugin://" + xbmcaddon.Addon().getAddonInfo('id')
 
     def route_for(self, path):
         """ Returns the view function for path. """
@@ -94,7 +92,7 @@ class Plugin(object):
     def run(self, argv=sys.argv):
         if len(argv) > 2:
             self.args = parse_qs(argv[2].lstrip(b'?'))
-        path = urlsplit(argv[0].decode('utf-8')).path or '/'
+        path = urlsplit(argv[0]).path or '/'
         self._dispatch(path)
 
     def redirect(self, path):
