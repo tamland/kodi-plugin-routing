@@ -29,7 +29,7 @@ if __name__ == '__main__':
 ```
 
 
-# Creating rules #
+## Creating rules
 
 The `route()` decorator binds a function to and an URL pattern. The pattern is
 a path expression consisting of static parts and variable parts of the URL.
@@ -50,7 +50,7 @@ def hello(what):
 Routes can also be registered manually with the `add_route` method. 
 
 
-# Building URLs #
+## Building URLs
 
 `url_for()` can be used to build URLs for registered functions.
 
@@ -77,7 +77,7 @@ example `url_for_path('/foo/bar')` will return `plugin://my.addon.id/foo/bar`.
 Unlike `url_for` this method will not check that the path is valid.
 
 
-# Query string #
+## Query string
 
 The query string part of the URL is parsed with `urlparse.parse_qs` and is
 accessible via the `plugin.args` attribute. The dictionary keys corresponds to
