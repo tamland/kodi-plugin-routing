@@ -31,8 +31,8 @@ if __name__ == '__main__':
 
 ## Creating rules
 
-The `route()` decorator binds a function to and an URL pattern. The pattern is
-a path expression consisting of static parts and variable parts of the URL.
+The `route()` decorator binds a function to an URL pattern. The pattern is a
+path expression consisting of static parts and variable parts of an URL.
 Variables are enclosed in angle brackets as `<variable_name>` and will be passed
 to the function as keyword arguments.
 
@@ -42,8 +42,8 @@ For example:
 
 @plugin.route('/hello/<what>')
 def hello(what):
-    # will be called for any incoming URL like `/hello/world`, `/hello/123` etc.
-    # 'what' will contain "world", "123" etc. depending on the URL
+    # will be called for all incoming URLs like "/hello/world", "/hello/123" etc.
+    # 'what' will contain "world", "123" etc. depending on the URL.
     pass
 ```
 
@@ -52,7 +52,9 @@ Routes can also be registered manually with the `add_route` method.
 
 ## Building URLs
 
-`url_for()` can be used to build URLs for registered functions.
+`url_for()` can be used to build URLs for registered functions. It takes a
+reference to a function and a number of arguments that corresponds to variables
+in the URL rule.
 
 For example:
 
@@ -60,8 +62,7 @@ For example:
 plugin.url_for(hello, what="world")
 ```
 
-will read the pattern from the function `hello`, fill in the variable parts and
-return a final URL:
+will read the rule for `hello`, fill in the variable parts and return a final URL:
 
 ```
 plugin://my.addon.id/hello/world
