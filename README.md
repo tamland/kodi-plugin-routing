@@ -100,3 +100,14 @@ def search():
     addDirectoryItem(plugin.handle, "", ListItem("You searched for '%s'" % query))
     # ...
 ```
+
+
+## Creating a dependency in your addon
+
+To get kodi to install this dependency you will have to add a command to your `addons.xml`.
+````
+    <requires>
+        <import addon="xbmc.python" version="2.25.0" />
+        <import addon="script.module.routing" version="0.2.0"/>
+    </requires>
+```
