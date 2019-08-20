@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import re
 import sys
 try:
@@ -108,7 +110,9 @@ class Plugin(object):
             self._rules[func] = []
         self._rules[func].append(rule)
 
-    def run(self, argv=sys.argv):
+    def run(self, argv=None):
+        if argv is None:
+            argv = sys.argv
         if len(argv) > 2:
             self.args = parse_qs(argv[2].lstrip('?'))
         path = urlsplit(argv[0]).path or '/'
