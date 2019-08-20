@@ -45,7 +45,7 @@ class RoutingError(Exception):
     pass
 
 
-class Plugin(object):
+class Plugin:
     """
     :ivar handle: The plugin handle from kodi
     :type handle: int
@@ -132,7 +132,7 @@ class Plugin(object):
         raise RoutingError('No route to path "%s"' % path)
 
 
-class UrlRule(object):
+class UrlRule:
 
     def __init__(self, pattern):
         kw_pattern = r'<(?:[^:]+:)?([A-z]+)>'
