@@ -8,7 +8,7 @@ python:
 sudo: false
 
 env:
-  PYTHONPATH: resources/lib:test
+  PYTHONPATH: lib
 
 install:
 - pip install -r requirements.txt
@@ -16,14 +16,7 @@ install:
 script:
 - tox
 - tox -e flake8
-- pylint resources/lib/ test/
+- pylint lib/*.py
 #- kodi-addon-checker . --branch=krypton
 #- kodi-addon-checker . --branch=leia
-- python test/test_apihelper.py
-- python test/test_routing.py
-- python test/test_search.py
-- python test/test_tvguide.py
-- python test/test_vrtplayer.py
-#- python test/test_favorites.py
-#- python test/test_streamservice.py
-- python test/run.py /
+- pytest lib/tests.py

@@ -20,7 +20,7 @@ reset = \e[0m
 
 .PHONY: test
 
-all: test zip
+all: test
 
 package: zip
 
@@ -43,7 +43,7 @@ addon: clean
 
 unit:
 	@echo -e "$(white)=$(blue) Starting unit tests$(reset)"
-	python -m unittest discover
+	pytest lib/tests.py
 
 # NOTE: To make this work you need to clone to $name-$version
 zip: clean
