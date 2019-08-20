@@ -14,8 +14,6 @@ install:
 - pip install -r requirements.txt
 
 script:
-- tox
-- tox -e flake8
 - pylint lib/*.py
 #- kodi-addon-checker . --branch=krypton
 #- kodi-addon-checker . --branch=leia

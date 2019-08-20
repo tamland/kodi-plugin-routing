@@ -2,4 +2,3 @@ kodi-addon-checker
 mock
 pylint
 pytest
-tox-travis
