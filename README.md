@@ -1,5 +1,9 @@
-# Plugin routing
+[![GitHub release](https://img.shields.io/github/release/tamland/kodi-plugin-routing.svg)](https://github.com/tamland/kodi-plugin-routing/releases)
+[![Build Status](https://travis-ci.org/tamland/kodi-plugin-routing.svg?branch=master)](https://travis-ci.org/tamland/kodi-plugin-routing)
+[![License: GPLv3](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
+[![Contributors](https://img.shields.io/github/contributors/tamland/kodi-plugin-routing.svg)](https://github.com/tamland/kodi-plugin-routing/graphs/contributors)
 
+# Plugin routing
 
 Library for building and parsing URLs in [Kodi](http://kodi.tv) plugins.
 
@@ -39,7 +43,6 @@ to the function as keyword arguments.
 For example:
 
 ```python
-
 @plugin.route('/hello/<what>')
 def hello(what):
     # will be called for all incoming URLs like "/hello/world", "/hello/123" etc.
@@ -92,8 +95,8 @@ def index():
     url = plugin.url_for(search, query="hello world")
     addDirectoryItem(plugin.handle, url, ListItem("Search"))
     # ...
-    
- 
+
+
 @plugin.route('/search')
 def search():
     query = plugin.args['query'][0]
@@ -105,7 +108,7 @@ def search():
 ## Creating a dependency in your addon
 
 To get kodi to install this dependency you will have to add a command to your `addons.xml`.
-````
+```xml
     <requires>
         <import addon="xbmc.python" version="2.25.0" />
         <import addon="script.module.routing" version="0.2.0"/>
