@@ -15,6 +15,10 @@ install:
 
 script:
 - pylint lib/*.py
-#- kodi-addon-checker . --branch=krypton
-#- kodi-addon-checker . --branch=leia
+- kodi-addon-checker . --branch=gotham
+- kodi-addon-checker . --branch=helix
+- kodi-addon-checker . --branch=isengard
+- kodi-addon-checker . --branch=jarvis
+- kodi-addon-checker . --branch=krypton
+- kodi-addon-checker . --branch=leia
 - pytest lib/tests.py

@@ -24,9 +24,9 @@ all: test
 
 package: zip
 
-test: sanity unit
+test: sanity unit addon
 
-sanity: tox pylint
+sanity: pylint
 
 tox:
 	@echo -e "$(white)=$(blue) Starting sanity tox test$(reset)"
