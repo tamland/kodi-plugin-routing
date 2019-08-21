@@ -15,6 +15,5 @@ install:
 
 script:
 - pylint lib/*.py
-#- kodi-addon-checker . --branch=krypton
-#- kodi-addon-checker . --branch=leia
 - pytest lib/tests.py
+#- if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then (kodi-addon-checker --branch=krypton .); fi
