@@ -21,11 +21,18 @@ plugin = routing.Plugin()
 def index():
     addDirectoryItem(plugin.handle, plugin.url_for(show_category, "one"), ListItem("Category One"), True)
     addDirectoryItem(plugin.handle, plugin.url_for(show_category, "two"), ListItem("Category Two"), True)
+    addDirectoryItem(plugin.handle, plugin.url_for(show_directory, "/dir/one"), ListItem("Directory One"), True)
+    addDirectoryItem(plugin.handle, plugin.url_for(show_directory, "/dir/two"), ListItem("Directory Two"), True)
     endOfDirectory(plugin.handle)
 
 @plugin.route('/category/<category_id>')
 def show_category(category_id):
     addDirectoryItem(plugin.handle, "", ListItem("Hello category %s!" % category_id))
+    endOfDirectory(plugin.handle)
+
+@plugin.route('/directory/<path:dir>')
+def show_directory(dir):
+    addDirectoryItem(plugin.handle, "", ListItem("List directory %s!" % dir))
     endOfDirectory(plugin.handle)
 
 if __name__ == '__main__':
@@ -47,6 +54,17 @@ For example:
 def hello(what):
     # will be called for all incoming URLs like "/hello/world", "/hello/123" etc.
     # 'what' will contain "world", "123" etc. depending on the URL.
+    pass
+```
+
+In case your variable contains slashes (i.e. is a path or URL) and you want
+to match this, you can use the `path` identifier in the patern.
+
+```python
+@plugin.route('/url/<path:url>')
+def parse_url(url):
+    # will be called for all incoming URLs like "/url/https://foo.bar/baz" etc.
+    # 'url' can be any string with slashes.
     pass
 ```
 
