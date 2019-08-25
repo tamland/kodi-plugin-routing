@@ -103,3 +103,10 @@ def test_arg_parsing(plugin):
     plugin.route("/foo")(f)
     plugin.run(['plugin://py.test/foo', '0', '?bar=baz'])
     assert plugin.args['bar'][0] == 'baz'
+
+
+def test_trailing_slashes():
+    assert UrlRule("/p/<foo>").match("/p/bar") == {'foo': 'bar'}
+    assert UrlRule("/p/<foo>").match("/p/bar/") == {'foo': 'bar'}
+    assert UrlRule("/p/<foo>").match("/p/bar//") == {'foo': 'bar'}
+    assert UrlRule("/p/<foo>").match("/p/bar///") == {'foo': 'bar'}

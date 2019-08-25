@@ -150,6 +150,10 @@ class UrlRule:
         Check if path matches this rule. Returns a dictionary of the extracted
         arguments if match, otherwise None.
         """
+        # Strip trailing slashes
+        if len(path) > 1:
+            path = path.rstrip('/')
+
         # match = self._regex.search(urlsplit(path).path)
         match = self._regex.search(path)
         return match.groupdict() if match else None
