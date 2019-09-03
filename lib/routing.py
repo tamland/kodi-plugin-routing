@@ -50,12 +50,19 @@ class Plugin:
     :ivar handle: The plugin handle from kodi
     :type handle: int
 
+    :ivar path: The current path
+    :type path: byte string
+
     :ivar args: The parsed query string.
     :type args: dict of byte strings
     """
 
     def __init__(self, base_url=None):
         self._rules = {}  # function to list of rules
+        if sys.argv:
+            self.path = urlsplit(sys.argv[0]).path or '/'
+        else:
+            self.path = '/'
         if len(sys.argv) > 1 and sys.argv[1].isdigit():
             self.handle = int(sys.argv[1])
         else:
@@ -116,10 +123,10 @@ class Plugin:
     def run(self, argv=None):
         if argv is None:
             argv = sys.argv
+        self.path = urlsplit(argv[0]).path or '/'
         if len(argv) > 2:
             self.args = parse_qs(argv[2].lstrip('?'))
-        path = urlsplit(argv[0]).path or '/'
-        self._dispatch(path)
+        self._dispatch(self.path)
 
     def redirect(self, path):
         self._dispatch(path)

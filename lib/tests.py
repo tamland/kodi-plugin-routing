@@ -86,6 +86,16 @@ def test_dispatch(plugin):
     f.assert_called_with()
 
 
+def test_path(plugin):
+    f = mock.create_autospec(lambda: None)
+    plugin.route("/foo")(f)
+    plugin.run(['plugin://py.test/foo', '0'])
+    assert plugin.path == '/foo'
+    plugin.route("/foo/bar/baz")(f)
+    plugin.run(['plugin://py.test/foo/bar/baz', '0'])
+    assert plugin.path == '/foo/bar/baz'
+
+
 def test_no_route(plugin):
     f = lambda a: None
     plugin.route("/foo/<a>/<b>")(f)
