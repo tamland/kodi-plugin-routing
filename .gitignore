@@ -1,4 +1,7 @@
 *.pyc
 *.pyo
+.coverage
 .pytest_cache/
 .tox/
+kodi-addon-checker-report.log
+kodi-addon-checker.log

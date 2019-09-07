@@ -15,5 +15,8 @@ install:
 
 script:
 - pylint lib/*.py
-- pytest lib/tests.py
+- coverage run -m pytest lib/tests.py
 #- if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then (kodi-addon-checker --branch=krypton .); fi
+
+after_success:
+- codecov

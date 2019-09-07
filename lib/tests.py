@@ -17,9 +17,10 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import sys
 import pytest
 import mock
-from routing import Plugin, UrlRule, RoutingError
+from routing import Plugin, UrlRule, RoutingError, _addon_id
 
 
 @pytest.fixture()
@@ -37,6 +38,9 @@ def test_make_path():
     assert rule.make_path(1, 2) == "/p/1/2"
     assert rule.make_path(baz=3, foo=1, bar=2) == "/p/1/2?baz=3"
     assert rule.make_path(1) is None
+    assert rule.make_path(1, bar=2) is None
+    assert rule.make_path(1, 2, 3) is None
+    assert str(rule)  # Cover __str__
 
 
 def test_make_path_should_urlencode_args():
@@ -96,6 +100,13 @@ def test_path(plugin):
     assert plugin.path == '/foo/bar/baz'
 
 
+def test_redirect(plugin):
+    f = mock.create_autospec(lambda: None)
+    plugin.route("/foo")(f)
+    plugin.redirect('/foo')
+    f.assert_called_with()
+
+
 def test_no_route(plugin):
     f = lambda a: None
     plugin.route("/foo/<a>/<b>")(f)
@@ -114,6 +125,7 @@ def test_arg_parsing(plugin):
     plugin.run(['plugin://py.test/foo', '0', '?bar=baz'])
     assert plugin.args['bar'][0] == 'baz'
 
+
 def test_trailing_slash_in_route_definition(plugin):
     """ Should call registered route with trailing slash. """
     f = mock.create_autospec(lambda: None)
@@ -121,12 +133,14 @@ def test_trailing_slash_in_route_definition(plugin):
     plugin.run(['plugin://py.test/foo', '0'])
     assert f.call_count == 1
 
+
 def test_trailing_slashes_in_run(plugin):
     """ Should call registered route without trailing slash. """
     f = mock.create_autospec(lambda: None)
     plugin.route("/foo")(f)
     plugin.run(['plugin://py.test/foo/', '0'])
     assert f.call_count == 1
+
 
 def test_trailing_slash_handling_for_root(plugin):
     f = mock.create_autospec(lambda: None)
@@ -137,3 +151,23 @@ def test_trailing_slash_handling_for_root(plugin):
     assert f.call_count == 2
     with pytest.raises(RoutingError):
         plugin.run(['plugin://py.test/a/b', '0'])
+
+
+def test_empty_run():
+    f = lambda: None
+    sys.argv = ['plugin://py.test/foo', '666', '?bar=baz']
+    p = Plugin('plugin://py.test')
+    p.route('/foo')(f)
+    p.run()
+    assert p.args['bar'][0] == 'baz'
+
+
+def test_argv():
+    sys.argv = ['plugin://py.test/foo', '666', '?bar=baz']
+    p = Plugin('plugin://py.test')
+    assert p.handle == 666
+
+
+def test_baseurl():
+    p = Plugin()
+    assert p.base_url == 'plugin://' + _addon_id

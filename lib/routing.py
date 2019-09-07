@@ -29,15 +29,16 @@ except ImportError:
     from urllib.parse import urlencode
 
 try:
-    import xbmc
-    import xbmcaddon
-    _addon_id = xbmcaddon.Addon().getAddonInfo('id')
+    from xbmc import LOGDEBUG, log
+    from xbmcaddon import Addon
+    _addon_id = Addon().getAddonInfo('id')
 
-    def log(msg):
-        msg = "[%s][routing] %s" % (_addon_id, msg)
-        xbmc.log(msg, level=xbmc.LOGDEBUG)
+    def _log(msg):
+        log('[%s][routing] %s' % (_addon_id, msg), level=LOGDEBUG)
 except ImportError:
-    def log(msg):
+    _addon_id = 'foo.bar'
+
+    def _log(msg):
         print(msg)
 
 
@@ -70,7 +71,7 @@ class Plugin:
         self.args = {}
         self.base_url = base_url
         if self.base_url is None:
-            self.base_url = "plugin://" + xbmcaddon.Addon().getAddonInfo('id')
+            self.base_url = "plugin://" + _addon_id
 
     def route_for(self, path):
         """
@@ -137,7 +138,7 @@ class Plugin:
             for rule in rules:
                 kwargs = rule.match(path)
                 if kwargs is not None:
-                    log("Dispatching to '%s', args: %s" % (view_func.__name__, kwargs))
+                    _log("Dispatching to '%s', args: %s" % (view_func.__name__, kwargs))
                     view_func(**kwargs)
                     return
         raise RoutingError('No route to path "%s"' % path)
@@ -183,10 +184,7 @@ class UrlRule:
         qs_kwargs = dict(((k, v) for k, v in list(kwargs.items()) if k not in self._keywords))
 
         query = '?' + urlencode(qs_kwargs) if qs_kwargs else ''
-        try:
-            return self._pattern.format(**url_kwargs) + query
-        except KeyError:
-            return None
+        return self._pattern.format(**url_kwargs) + query
 
     def __str__(self):
-        return b"Rule(pattern=%s, keywords=%s)" % (self._pattern, self._keywords)
+        return "Rule(pattern=%s, keywords=%s)" % (self._pattern, self._keywords)

@@ -1,5 +1,6 @@
 [![GitHub release](https://img.shields.io/github/release/tamland/kodi-plugin-routing.svg)](https://github.com/tamland/kodi-plugin-routing/releases)
 [![Build Status](https://travis-ci.org/tamland/kodi-plugin-routing.svg?branch=master)](https://travis-ci.org/tamland/kodi-plugin-routing)
+[![Codecov status](https://img.shields.io/codecov/c/github/tamland/kodi-plugin-routing/master)](https://codecov.io/gh/tamland/kodi-plugin-routing/branch/master)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Contributors](https://img.shields.io/github/contributors/tamland/kodi-plugin-routing.svg)](https://github.com/tamland/kodi-plugin-routing/graphs/contributors)
 
