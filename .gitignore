@@ -2,3 +2,8 @@
 *.pyo
 .pytest_cache/
 .tox/
+
+build/
+dist/
+routing.egg-info/
+
