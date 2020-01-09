@@ -41,6 +41,13 @@ except ImportError:
         print(msg)
 
 
+def to_unicode(text, encoding='utf-8', errors='strict'):
+    """Force text to unicode"""
+    if isinstance(text, bytes):
+        return text.decode(encoding, errors=errors)
+    return text
+
+
 class RoutingError(Exception):
     pass
 
@@ -60,7 +67,7 @@ class Plugin:
     def __init__(self, base_url=None):
         self._rules = {}  # function to list of rules
         if sys.argv:
-            self.path = urlsplit(sys.argv[0]).path or '/'
+            self.path = urlsplit(to_unicode(sys.argv[0])).path or '/'
         else:
             self.path = '/'
         if len(sys.argv) > 1 and sys.argv[1].isdigit():
@@ -123,10 +130,10 @@ class Plugin:
     def run(self, argv=None):
         if argv is None:
             argv = sys.argv
-        self.path = urlsplit(argv[0]).path
+        self.path = urlsplit(to_unicode(argv[0])).path
         self.path = self.path.rstrip('/')
         if len(argv) > 2:
-            self.args = parse_qs(argv[2].lstrip('?'))
+            self.args = parse_qs(to_unicode(argv[2]).lstrip('?'))
         self._dispatch(self.path)
 
     def redirect(self, path):
