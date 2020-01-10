@@ -1,44 +1,30 @@
 # -*- coding: utf-8 -*-
-#
-# Copyright (C) 2014-2015 Thomas Amland
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Copyright: (c) 2014-2015, Thomas Amland
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import re
 import sys
-try:
-    from urlparse import urlsplit, parse_qs
-except ImportError:
-    from urllib.parse import urlsplit, parse_qs
-try:
+try:  # Python 3
+    from urllib.parse import parse_qs, urlencode, urlsplit
+except ImportError:  # Python 2
     from urllib import urlencode
-except ImportError:
-    from urllib.parse import urlencode
+    from urlparse import parse_qs, urlsplit
 
 try:
-    import xbmc
-    import xbmcaddon
-    _addon_id = xbmcaddon.Addon().getAddonInfo('id')
+    from xbmc import LOGDEBUG, xlog
+    from xbmcaddon import Addon
+    ADDON_ID = Addon().getAddonInfo('id')
 
     def log(msg):
-        msg = "[%s][routing] %s" % (_addon_id, msg)
-        xbmc.log(msg, level=xbmc.LOGDEBUG)
+        msg = '[%s][routing] %s' % (ADDON_ID, msg)
+        xlog(msg, level=LOGDEBUG)
 except ImportError:
+    ADDON_ID = 'plugin.foo.bar'
     def log(msg):
-        print(msg)
+        print('[routing] %s' % msg)
 
 
 class RoutingError(Exception):
@@ -69,8 +55,9 @@ class Plugin:
             self.handle = -1
         self.args = {}
         self.base_url = base_url
+        self.addon_id = ADDON_ID
         if self.base_url is None:
-            self.base_url = "plugin://" + xbmcaddon.Addon().getAddonInfo('id')
+            self.base_url = 'plugin://{0}'.format(ADDON_ID)
 
     def route_for(self, path):
         """
