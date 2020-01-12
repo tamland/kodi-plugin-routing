@@ -81,7 +81,17 @@ class Plugin:
         if path.startswith(self.base_url):
             path = path.split(self.base_url, 1)[1]
 
-        for view_fun, rules in iter(list(self._rules.items())):
+        # only list convert once
+        list_rules = list(self._rules.items())
+
+        # first, search for exact matches
+        for view_fun, rules in iter(list_rules):
+            for rule in rules:
+                if rule.exact_match(path):
+                    return view_fun
+
+        # then, search for regex matches
+        for view_fun, rules in iter(list_rules):
             for rule in rules:
                 if rule.match(path) is not None:
                     return view_fun
@@ -96,8 +106,8 @@ class Plugin:
                 path = rule.make_path(*args, **kwargs)
                 if path is not None:
                     return self.url_for_path(path)
-        raise RoutingError("No known paths to '{0}' with args {1} and "
-                           "kwargs {2}".format(func.__name__, args, kwargs))
+        raise RoutingError("No known paths to '{0}' with args {1} "
+                           "and kwargs {2}".format(func.__name__, args, kwargs))
 
     def url_for_path(self, path):
         """
@@ -133,13 +143,24 @@ class Plugin:
         self._dispatch(path)
 
     def _dispatch(self, path):
-        for view_func, rules in iter(list(self._rules.items())):
+        list_rules = list(self._rules.items())
+        for view_func, rules in iter(list_rules):
+            for rule in rules:
+                if not rule.exact_match(path):
+                    continue
+                log("Dispatching to '%s', exact match" % view_func.__name__)
+                view_func()
+                return
+
+        # then, search for regex matches
+        for view_func, rules in iter(list_rules):
             for rule in rules:
                 kwargs = rule.match(path)
-                if kwargs is not None:
-                    log("Dispatching to '%s', args: %s" % (view_func.__name__, kwargs))
-                    view_func(**kwargs)
-                    return
+                if kwargs is None:
+                    continue
+                log("Dispatching to '%s', args: %s" % (view_func.__name__, kwargs))
+                view_func(**kwargs)
+                return
         raise RoutingError('No route to path "%s"' % path)
 
 
@@ -147,13 +168,16 @@ class UrlRule:
 
     def __init__(self, pattern):
         pattern = pattern.rstrip('/')
-        kw_pattern = r'<(?:[^:]+:)?([A-z]+)>'
+        arg_regex = re.compile('<([A-z_][A-z0-9_]*)>')
+        self._has_args = bool(arg_regex.search(pattern))
+
+        kw_pattern = r'<(?:[^:]+:)?([A-z_][A-z0-9_]*)>'
         self._pattern = re.sub(kw_pattern, '{\\1}', pattern)
         self._keywords = re.findall(kw_pattern, pattern)
 
-        p = re.sub('<([A-z]+)>', '<string:\\1>', pattern)
-        p = re.sub('<string:([A-z]+)>', '(?P<\\1>[^/]+?)', p)
-        p = re.sub('<path:([A-z]+)>', '(?P<\\1>.*)', p)
+        p = re.sub('<([A-z_][A-z0-9_]*)>', '<string:\\1>', pattern)
+        p = re.sub('<string:([A-z_][A-z0-9_]*)>', '(?P<\\1>[^/]+?)', p)
+        p = re.sub('<path:([A-z_][A-z0-9_]*)>', '(?P<\\1>.*)', p)
         self._compiled_pattern = p
         self._regex = re.compile('^' + p + '$')
 
@@ -166,6 +190,9 @@ class UrlRule:
         match = self._regex.search(path)
         return match.groupdict() if match else None
 
+    def exact_match(self, path):
+        return not self._has_args and self._pattern == path
+
     def make_path(self, *args, **kwargs):
         """Construct a path from arguments."""
         if args and kwargs:
@@ -173,7 +200,7 @@ class UrlRule:
         if args:
             # Replace the named groups %s and format
             try:
-                return re.sub(r'{[A-z]+}', r'%s', self._pattern) % args
+                return re.sub(r'{[A-z_][A-z0-9_]*}', r'%s', self._pattern) % args
             except TypeError:
                 return None
 
